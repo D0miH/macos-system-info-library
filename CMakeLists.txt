@@ -1,4 +1,4 @@
-project(SMCKitCPP)
+project(SMCPPKit)
 cmake_minimum_required(VERSION 3.13)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -9,8 +9,8 @@ if(NOT IOKit)
     message(FATAL_ERROR "IOKit not found")
 endif()
 
-ADD_LIBRARY(SMCKit SMCKit.h SMCKit.cpp)
+ADD_LIBRARY(SMCKit SMCKit.h SMCKit.cpp SMCParamStruct.h)
 
-add_executable(SMCKitCPP main.cpp)
+add_executable(SMCPPKit main.cpp)
 
-target_link_libraries(SMCKitCPP SMCKit ${IOKit})
+target_link_libraries(SMCPPKit SMCKit ${IOKit})
