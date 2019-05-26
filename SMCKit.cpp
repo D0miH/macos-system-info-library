@@ -50,3 +50,14 @@ SMCParamStruct SMCKit::callSMC(SMCParamStruct givenStruct,
         throw std::runtime_error("An unknown error occurred while reading the SMC-Key!");
     }
 }
+
+void SMCKit::readKey(smc_key_t smcKey, SMCBytes &result) {
+    SMCParamStruct inputStruct = SMCParamStruct();
+
+    inputStruct.key = smcKey.code;
+    inputStruct.keyInfo.dataSize = (UInt32) smcKey.info.size;
+    inputStruct.data8 = kSMCReadKey;
+
+    SMCParamStruct resultStruct = callSMC(inputStruct);
+    std::copy(std::begin(resultStruct.bytes), std::end(result), std::begin(result));
+}

@@ -9,7 +9,7 @@ if(NOT IOKit)
     message(FATAL_ERROR "IOKit not found")
 endif()
 
-ADD_LIBRARY(SMCKit SMCKit.h SMCKit.cpp SMCParamStruct.h)
+ADD_LIBRARY(SMCKit SMCKit.h SMCKit.cpp Utils.h)
 
 add_executable(SMCPPKit main.cpp)
 
