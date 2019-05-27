@@ -135,6 +135,12 @@ public:
      * @param result            Reference in which the result will be stored.
      */
     void readKey(smc_key_t smcKey, SMCBytes& result);
+
+    /**
+     * Reads the cpu temperature of the CPU_0_DIE sensor.
+     * @return  The temperature of the cpu in degrees celcius.
+     */
+    int readCPUTemp();
 };
 
 #endif //SMCPPKIT_SMCKIT_H

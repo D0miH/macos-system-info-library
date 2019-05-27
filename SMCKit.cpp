@@ -51,7 +51,7 @@ SMCParamStruct SMCKit::callSMC(SMCParamStruct givenStruct,
     }
 }
 
-void SMCKit::readKey(smc_key_t smcKey, SMCBytes &result) {
+void SMCKit::readKey(smc_key_t smcKey, SMCBytes& result) {
     SMCParamStruct inputStruct = SMCParamStruct();
 
     inputStruct.key = smcKey.code;
@@ -59,5 +59,13 @@ void SMCKit::readKey(smc_key_t smcKey, SMCBytes &result) {
     inputStruct.data8 = kSMCReadKey;
 
     SMCParamStruct resultStruct = callSMC(inputStruct);
-    std::copy(std::begin(resultStruct.bytes), std::end(result), std::begin(result));
+    std::copy(std::begin(resultStruct.bytes), std::end(resultStruct.bytes), std::begin(result));
+}
+
+int SMCKit::readCPUTemp() {
+    SMCKey key = SMCKey("TC0F", types.SP78);
+    SMCBytes readResult = { 0 };
+    readKey(key, readResult);
+
+    return (unsigned int)readResult[0];
 }
