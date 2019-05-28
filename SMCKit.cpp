@@ -26,7 +26,7 @@ void SMCKit::close() {
 }
 
 SMCParamStruct SMCKit::callSMC(SMCParamStruct givenStruct,
-                     SMCSelector smcSelector = kSMCHandleYPCEvent) {
+                               SMCSelector smcSelector = kSMCHandleYPCEvent) {
     // create an output struct to save the result
     SMCParamStruct outputStruct = SMCParamStruct();
     size_t outputStructSize = sizeof(outputStruct);
@@ -40,18 +40,18 @@ SMCParamStruct SMCKit::callSMC(SMCParamStruct givenStruct,
                                                             &outputStruct,
                                                             &outputStructSize);
 
-    if(smcCallResult == kIOReturnSuccess && outputStruct.result == kSMCSuccess) {
+    if (smcCallResult == kIOReturnSuccess && outputStruct.result == kSMCSuccess) {
         return outputStruct;
-    } else if(smcCallResult == kIOReturnSuccess && outputStruct.result == kSMCKeyNotFound) {
+    } else if (smcCallResult == kIOReturnSuccess && outputStruct.result == kSMCKeyNotFound) {
         throw std::runtime_error("Given SMC-Key was not found!");
-    } else if(smcCallResult == kIOReturnNotPrivileged) {
+    } else if (smcCallResult == kIOReturnNotPrivileged) {
         throw std::runtime_error("Reading this key requires root privileges!");
     } else {
         throw std::runtime_error("An unknown error occurred while reading the SMC-Key!");
     }
 }
 
-void SMCKit::readKey(smc_key_t smcKey, SMCBytes& result) {
+void SMCKit::readKey(smc_key_t smcKey, SMCBytes &result) {
     SMCParamStruct inputStruct = SMCParamStruct();
 
     inputStruct.key = smcKey.code;
@@ -62,10 +62,22 @@ void SMCKit::readKey(smc_key_t smcKey, SMCBytes& result) {
     std::copy(std::begin(resultStruct.bytes), std::end(resultStruct.bytes), std::begin(result));
 }
 
-int SMCKit::readCPUTemp() {
-    SMCKey key = SMCKey("TC0F", types.SP78);
-    SMCBytes readResult = { 0 };
-    readKey(key, readResult);
-
-    return (unsigned int)readResult[0];
+void SMCKit::readKey(const std::string& keyCode, DataType typeInfo, SMCBytes& resultArray) {
+    SMCKey key = SMCKey(keyCode, typeInfo);
+    readKey(key, resultArray);
 }
+
+int SMCKit::getCPUTemp() {
+    SMCBytes readResult = {0};
+    readKey("TC0F", types.SP78, readResult);
+
+    return (unsigned int) readResult[0];
+}
+
+int SMCKit::getFanCount() {
+    SMCBytes readResult = {0};
+    readKey("FNum", types.UInt8, readResult);
+
+    return (unsigned int) readResult[0];
+}
+

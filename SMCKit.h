@@ -137,10 +137,24 @@ public:
     void readKey(smc_key_t smcKey, SMCBytes& result);
 
     /**
+     * Reads the data of the key code from the SMC.
+     * @param keyCode   The given four-figure key code.
+     * @param typeInfo  The type info for reading the key.
+     * @param resultArray   The array in which the read data is written.
+     */
+    void readKey(const std::string& keyCode, DataType typeInfo, SMCBytes& resultArray);
+
+    /**
      * Reads the cpu temperature of the CPU_0_DIE sensor.
      * @return  The temperature of the cpu in degrees celcius.
      */
-    int readCPUTemp();
+    int getCPUTemp();
+
+    /**
+     * Returns the number of fans of the machine.
+     * @return  The number of fans.
+     */
+    int getFanCount();
 };
 
 #endif //SMCPPKIT_SMCKIT_H
