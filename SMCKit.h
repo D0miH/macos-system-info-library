@@ -155,6 +155,18 @@ public:
      * @return  The number of fans.
      */
     int getFanCount();
+
+    /**
+     * Returns the number of batteries of the machine.
+     * @return  The number of batteries.
+     */
+    int getBatteryCount();
+
+    /**
+     * Returns true if the battery is currently charged. Return false otherwise.
+     * @return  Whether the battery is charged.
+     */
+    bool isOnAC();
 };
 
 #endif //SMCPPKIT_SMCKIT_H

@@ -81,3 +81,16 @@ int SMCKit::getFanCount() {
     return (unsigned int) readResult[0];
 }
 
+int SMCKit::getBatteryCount() {
+    SMCBytes readResults = {0};
+    readKey("BNum", types.UInt8, readResults);
+
+    return (unsigned int) readResults[0];
+}
+
+bool SMCKit::isOnAC() {
+    SMCBytes readResults = {0};
+    readKey("BSIn", types.UInt8, readResults);
+
+    return (bool) (readResults[0] & (unsigned)1);
+}
