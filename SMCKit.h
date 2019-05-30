@@ -157,7 +157,14 @@ public:
     int getFanCount();
 
     /**
-     * Returns the maximum rounds per minute (rpm) the fan with the given id.
+     * Returns the minimum rounds per minute (rpm) of the fan with the given id.
+     * @param fanID The given fan id.
+     * @return  The lowest possible rpm.
+     */
+    int getMinSpeed(int fanID);
+
+    /**
+     * Returns the maximum rounds per minute (rpm) of the fan with the given id.
      * @param fanID The given fan id.
      * @return  The highest possible rpm
      */
