@@ -171,6 +171,13 @@ public:
     int getFanMaxSpeed(int fanID);
 
     /**
+     * Returns the current rounds per minute (rpm) of the fan with the given id.
+     * @param fanID The given fan id.
+     * @return  The current rpm.
+     */
+    int getCurrentFanSpeed(int fanID);
+
+    /**
      * Returns the number of batteries of the machine.
      * @return  The number of batteries.
      */

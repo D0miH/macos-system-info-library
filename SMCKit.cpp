@@ -115,6 +115,23 @@ int SMCKit::getFanMaxSpeed(int fanID) {
     }
 }
 
+int SMCKit::getCurrentFanSpeed(int fanID) {
+    SMCBytes readResult = {0};
+    std::string keyString = "F" + std::to_string(fanID) + "Ac";
+
+    try {
+        // try to raed using the fpe2 type. Does not work for newer Macbooks.
+        readKey(keyString, types.FPE2, readResult);
+        UInt8 fpeValue[2] = {readResult[0], readResult[1]};
+        return Utils::fpe2ToInt(fpeValue);
+    } catch (const std::runtime_error &e) {
+        // if reading the data using fpe2 fails try using flt type
+        readKey(keyString, types.FLT, readResult);
+        UInt8 fltValue[4] = {readResult[0], readResult[1], readResult[2], readResult[3]};
+        return Utils::fltToInt(fltValue);
+    }
+}
+
 int SMCKit::getBatteryCount() {
     SMCBytes readResults = {0};
     readKey("BNum", types.UInt8, readResults);
