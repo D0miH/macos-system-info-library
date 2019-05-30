@@ -24,10 +24,13 @@ enum SMCSelector : UInt8 {
 
 typedef UInt8 SMCBytes[32];
 
-typedef struct DataType{
-    DataType(const std::string& givenString, UInt32 givenSize) {
-        type = Utils::fourCharCodeFromString(givenString);
+typedef struct DataType {
+    DataType(const std::string &givenString, UInt32 givenSize) {
+        type = Utils::stringToFourCharCode(givenString);
         size = givenSize;
+    }
+
+    DataType(FourCharCode givenType, UInt32 givenSize) : type(givenType), size(givenSize) {
     }
 
     FourCharCode type;
@@ -45,8 +48,8 @@ typedef struct DataTypes {
 } data_types_t;
 
 typedef struct SMCKey {
-    SMCKey(const std::string& givenString, data_type_t& typeInfo): info(typeInfo) {
-        code = Utils::fourCharCodeFromString(givenString);
+    SMCKey(const std::string &givenString, data_type_t &typeInfo) : info(typeInfo) {
+        code = Utils::stringToFourCharCode(givenString);
     }
 
     FourCharCode code;
@@ -61,7 +64,7 @@ typedef struct SMCVersion {
     unsigned short release = 0;
 } smc_version_t;
 
-typedef struct SMCLimitData{
+typedef struct SMCLimitData {
     UInt16 version = 0;
     UInt16 length = 0;
     UInt32 cpuPLimit = 0;
@@ -69,7 +72,7 @@ typedef struct SMCLimitData{
     UInt32 memPLimit = 0;
 } smc_limit_data_t;
 
-typedef struct SMCKeyInfoData{
+typedef struct SMCKeyInfoData {
     IOByteCount dataSize = 0;
     UInt32 dataType = 0;
     UInt8 dataAttributes = 0;
@@ -93,13 +96,13 @@ struct SMCParamStruct {
 
     UInt32 data32 = 0;
 
-    SMCBytes bytes = { 0 };
+    SMCBytes bytes = {0};
 };
 
 
 class SMCKit {
 private:
-    io_connect_t  connectionHandle;
+    io_connect_t connectionHandle = 0;
 
 public:
     DataTypes types = DataTypes();
@@ -121,12 +124,20 @@ public:
     void close();
 
     /**
+     * Returns the data type of the given key.
+     * @param keyString The given key as a string.
+     * @return  The data type information for the given key.
+     */
+    DataType getKeyInformation(std::string keyString);
+
+    /**
      * Makes a call to the SMC.
      * @throws runtime_error    Throws a runtime error if something went wrong reading the key.
      * @param givenStruct       The given struct which is used to call the SMC.
-     * @return  Returns the resulting struct of the SMC call.
+     * @param smcSelector       The given smc selector.
+     * @return  Returns the resulting struct of the SMC call
      */
-    SMCParamStruct callSMC(SMCParamStruct givenStruct, SMCSelector);
+    SMCParamStruct callSMC(SMCParamStruct givenStruct, SMCSelector smcSelector = kSMCHandleYPCEvent);
 
     /**
      * Reads the data of a SMC-Key
@@ -134,7 +145,7 @@ public:
      * @param smcKey            The given struct containing the key.
      * @param result            Reference in which the result will be stored.
      */
-    void readKey(smc_key_t smcKey, SMCBytes& result);
+    void readKey(smc_key_t smcKey, SMCBytes &result);
 
     /**
      * Reads the data of the key code from the SMC.
@@ -142,7 +153,7 @@ public:
      * @param typeInfo  The type info for reading the key.
      * @param resultArray   The array in which the read data is written.
      */
-    void readKey(const std::string& keyCode, DataType typeInfo, SMCBytes& resultArray);
+    void readKey(const std::string &keyCode, DataType typeInfo, SMCBytes &resultArray);
 
     /**
      * Reads the cpu temperature of the CPU_0_DIE sensor.
@@ -161,7 +172,7 @@ public:
      * @param fanID The given fan id.
      * @return  The lowest possible rpm.
      */
-    int getMinSpeed(int fanID);
+    int getFanMinSpeed(int fanID);
 
     /**
      * Returns the maximum rounds per minute (rpm) of the fan with the given id.

@@ -25,8 +25,19 @@ void SMCKit::close() {
     }
 }
 
+DataType SMCKit::getKeyInformation(std::string keyString) {
+    // create a new smc struct and set the key and data fields
+    SMCParamStruct inputStruct = SMCParamStruct();
+    inputStruct.key = Utils::stringToFourCharCode(keyString);
+    inputStruct.data8 = kSMCGetKeyInfo;
+
+    SMCParamStruct readResult = callSMC(inputStruct);
+
+    return {readResult.keyInfo.dataType, readResult.keyInfo.dataSize};
+}
+
 SMCParamStruct SMCKit::callSMC(SMCParamStruct givenStruct,
-                               SMCSelector smcSelector = kSMCHandleYPCEvent) {
+                               SMCSelector smcSelector) {
     // create an output struct to save the result
     SMCParamStruct outputStruct = SMCParamStruct();
     size_t outputStructSize = sizeof(outputStruct);
@@ -81,7 +92,7 @@ int SMCKit::getFanCount() {
     return (unsigned int) readResult[0];
 }
 
-int SMCKit::getMinSpeed(int fanID) {
+int SMCKit::getFanMinSpeed(int fanID) {
     SMCBytes readResult = {0};
     std::string keyString = "F" + std::to_string(fanID) + "Mn";
 
