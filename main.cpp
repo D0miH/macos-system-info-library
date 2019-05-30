@@ -7,7 +7,7 @@ int main() {
     smc.open();
 
     for(int i=0; i<10; i++) {
-        bool temp = smc.isOnAC();
+        int temp = smc.getFanMaxSpeed(0);
         std::cout << temp << std::endl;
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }

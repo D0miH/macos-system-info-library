@@ -62,7 +62,7 @@ void SMCKit::readKey(smc_key_t smcKey, SMCBytes &result) {
     std::copy(std::begin(resultStruct.bytes), std::end(resultStruct.bytes), std::begin(result));
 }
 
-void SMCKit::readKey(const std::string& keyCode, DataType typeInfo, SMCBytes& resultArray) {
+void SMCKit::readKey(const std::string &keyCode, DataType typeInfo, SMCBytes &resultArray) {
     SMCKey key = SMCKey(keyCode, typeInfo);
     readKey(key, resultArray);
 }
@@ -81,6 +81,24 @@ int SMCKit::getFanCount() {
     return (unsigned int) readResult[0];
 }
 
+int SMCKit::getFanMaxSpeed(int fanID) {
+    SMCBytes readResult = {0};
+    std::string keyString = "F" + std::to_string(fanID) + "Mx";
+
+    try {
+        // try to raed using the fpe2 type. Does not work for newer Macbooks.
+        readKey(keyString, types.FPE2, readResult);
+        UInt8 fpeValue[2] = {readResult[0], readResult[1]};
+        return Utils::fpe2ToInt(fpeValue);
+    } catch (const std::runtime_error &e) {
+        // if reading the data using fpe2 fails try using flt type
+        readKey(keyString, types.FLT, readResult);
+        UInt8 fltValue[4] = {readResult[0], readResult[1], readResult[2], readResult[3]};
+        return Utils::fltToInt(fltValue);
+    }
+
+}
+
 int SMCKit::getBatteryCount() {
     SMCBytes readResults = {0};
     readKey("BNum", types.UInt8, readResults);
@@ -92,5 +110,5 @@ bool SMCKit::isOnAC() {
     SMCBytes readResults = {0};
     readKey("BSIn", types.UInt8, readResults);
 
-    return (bool) (readResults[0] & (unsigned)1);
+    return (bool) (readResults[0] & (unsigned) 1);
 }
