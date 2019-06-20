@@ -25,7 +25,7 @@ void SMCKit::close() {
     }
 }
 
-DataType SMCKit::getKeyInformation(std::string keyString) {
+DataType SMCKit::getKeyInfo(std::string keyString) {
     // create a new smc struct and set the key and data fields
     SMCParamStruct inputStruct = SMCParamStruct();
     inputStruct.key = Utils::stringToFourCharCode(keyString);

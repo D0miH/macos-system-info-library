@@ -128,7 +128,7 @@ public:
      * @param keyString The given key as a string.
      * @return  The data type information for the given key.
      */
-    DataType getKeyInformation(std::string keyString);
+    DataType getKeyInfo(std::string keyString);
 
     /**
      * Makes a call to the SMC.
