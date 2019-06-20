@@ -92,7 +92,7 @@ int SMCKit::getFanCount() {
     return (unsigned int) readResult[0];
 }
 
-int SMCKit::getFanMinSpeed(int fanID) {
+int SMCKit::getMinFanSpeed(int fanID) {
     SMCBytes readResult = {0};
     std::string keyString = "F" + std::to_string(fanID) + "Mn";
 
@@ -109,7 +109,7 @@ int SMCKit::getFanMinSpeed(int fanID) {
     }
 }
 
-int SMCKit::getFanMaxSpeed(int fanID) {
+int SMCKit::getMaxFanSpeed(int fanID) {
     SMCBytes readResult = {0};
     std::string keyString = "F" + std::to_string(fanID) + "Mx";
 
