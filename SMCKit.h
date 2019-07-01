@@ -198,7 +198,7 @@ public:
      * Returns true if the battery is currently charged. Return false otherwise.
      * @return  Whether the battery is charged.
      */
-    bool isOnAC();
+    bool isChargingBattery();
 };
 
 #endif //SMCPPKIT_SMCKIT_H

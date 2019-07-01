@@ -150,7 +150,7 @@ int SMCKit::getBatteryCount() {
     return (unsigned int) readResults[0];
 }
 
-bool SMCKit::isOnAC() {
+bool SMCKit::isChargingBattery() {
     SMCBytes readResults = {0};
     readKey("BSIn", types.UInt8, readResults);
 
