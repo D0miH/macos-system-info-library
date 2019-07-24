@@ -8,13 +8,15 @@
  * These enum and structs are defined in the Apple PowerManagement project:
  * https://opensource.apple.com/source/PowerManagement/PowerManagement-211/pmconfigd/PrivateLib.c.auto.html
  */
-enum SMCResult : UInt8 {
+enum SMCResult : UInt8
+{
     kSMCSuccess = 0,
     kSMCError = 1,
     kSMCKeyNotFound = 132
 };
 
-enum SMCSelector : UInt8 {
+enum SMCSelector : UInt8
+{
     kSMCHandleYPCEvent = 2,
     kSMCReadKey = 5,
     kSMCWriteKey = 6,
@@ -24,20 +26,24 @@ enum SMCSelector : UInt8 {
 
 typedef UInt8 SMCBytes[32];
 
-typedef struct DataType {
-    DataType(const std::string &givenString, UInt32 givenSize) {
+typedef struct DataType
+{
+    DataType(const std::string &givenString, UInt32 givenSize)
+    {
         type = Utils::stringToFourCharCode(givenString);
         size = givenSize;
     }
 
-    DataType(FourCharCode givenType, UInt32 givenSize) : type(givenType), size(givenSize) {
+    DataType(FourCharCode givenType, UInt32 givenSize) : type(givenType), size(givenSize)
+    {
     }
 
     FourCharCode type;
     UInt32 size;
 } data_type_t;
 
-typedef struct DataTypes {
+typedef struct DataTypes
+{
     DataType FDS = DataType("{fds", 16);
     DataType Flag = DataType("flag", 1);
     DataType FPE2 = DataType("fpe2", 2);
@@ -47,8 +53,10 @@ typedef struct DataTypes {
     DataType UInt32 = DataType("ui32", 4);
 } data_types_t;
 
-typedef struct SMCKey {
-    SMCKey(const std::string &givenString, data_type_t &typeInfo) : info(typeInfo) {
+typedef struct SMCKey
+{
+    SMCKey(const std::string &givenString, data_type_t &typeInfo) : info(typeInfo)
+    {
         code = Utils::stringToFourCharCode(givenString);
     }
 
@@ -56,7 +64,8 @@ typedef struct SMCKey {
     DataType info;
 } smc_key_t;
 
-typedef struct SMCVersion {
+typedef struct SMCVersion
+{
     unsigned char major = 0;
     unsigned char minor = 0;
     unsigned char build = 0;
@@ -64,7 +73,8 @@ typedef struct SMCVersion {
     unsigned short release = 0;
 } smc_version_t;
 
-typedef struct SMCLimitData {
+typedef struct SMCLimitData
+{
     UInt16 version = 0;
     UInt16 length = 0;
     UInt32 cpuPLimit = 0;
@@ -72,13 +82,15 @@ typedef struct SMCLimitData {
     UInt32 memPLimit = 0;
 } smc_limit_data_t;
 
-typedef struct SMCKeyInfoData {
+typedef struct SMCKeyInfoData
+{
     IOByteCount dataSize = 0;
     UInt32 dataType = 0;
     UInt8 dataAttributes = 0;
 } smc_key_info_data_t;
 
-struct SMCParamStruct {
+struct SMCParamStruct
+{
 
     UInt32 key = 0;
 
@@ -99,15 +111,16 @@ struct SMCParamStruct {
     SMCBytes bytes = {0};
 };
 
-
-class SMCKit {
+class SMCKit
+{
 private:
     io_connect_t connectionHandle = 0;
 
 public:
     DataTypes types = DataTypes();
 
-    ~SMCKit() {
+    ~SMCKit()
+    {
         close();
     }
 
