@@ -194,19 +194,22 @@ bool SMCKit::isChargingBattery()
     return (bool)(readResults[0] & (unsigned)1);
 }
 
-std::string SMCKit::getBatteryHealth()
+float SMCKit::getBatteryHealth()
 {
-    // get the power source info
-    CFTypeRef psInfoRef = IOPSCopyPowerSourcesInfo();
-    // get all the power source devices
-    CFArrayRef psDevices = IOPSCopyPowerSourcesList(psInfoRef);
+    // get the
+    io_registry_entry_t batteryRegistry = IORegistryEntryFromPath(kIOMasterPortDefault, "IOService:/AppleACPIPlatformExpert/SMB0/AppleECSMBusController/AppleSmartBatteryManager/AppleSmartBattery");
+    CFMutableDictionaryRef psDict;
+    if (IORegistryEntryCreateCFProperties(batteryRegistry, &psDict, kCFAllocatorDefault, 0))
+    {
+        throw std::runtime_error("Something went wrong while reading the battery health.");
+    }
 
-    CFDictionaryRef psDict = IOPSGetPowerSourceDescription(psInfoRef, CFArrayGetValueAtIndex(psDevices, 0));
+    // get the design capacity
+    SInt32 designCapacity;
+    CFNumberGetValue((CFNumberRef)CFDictionaryGetValue(psDict, CFSTR(kIOPSDesignCapacityKey)), (CFNumberType)3, &designCapacity);
+    // get the current max capacity
+    SInt32 maxCapacity;
+    CFNumberGetValue((CFNumberRef)CFDictionaryGetValue(psDict, CFSTR("MaxCapacity")), (CFNumberType)3, &maxCapacity);
 
-    char batteryHealth[100];
-    CFStringGetCString((CFStringRef)CFDictionaryGetValue(psDict, CFSTR(kIOPSBatteryHealthKey)), batteryHealth, 100, kCFStringEncodingUTF8);
-
-    CFRelease(psInfoRef);
-
-    return std::string(batteryHealth);
+    return (float)maxCapacity / (float)designCapacity;
 }

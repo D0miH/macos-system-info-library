@@ -216,7 +216,7 @@ public:
     /**
      * Returns the health of the battery in percentage.
      */
-    std::string getBatteryHealth();
+    float getBatteryHealth();
 };
 
 #endif //SMCPPKIT_SMCKIT_H
