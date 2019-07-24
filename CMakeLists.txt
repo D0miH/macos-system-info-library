@@ -9,8 +9,13 @@ if(NOT IOKit)
     message(FATAL_ERROR "IOKit not found")
 endif()
 
+find_library(CoreFoundation CoreFoundation)
+if(NOT CoreFoundation)
+    message(FATAL_ERROR "CoreFoundation not found")
+endif()
+
 ADD_LIBRARY(SMCKit SMCKit.h SMCKit.cpp Utils.h)
 
 add_executable(SMCPPKit main.cpp)
 
-target_link_libraries(SMCPPKit SMCKit ${IOKit})
+target_link_libraries(SMCPPKit SMCKit ${IOKit} ${CoreFoundation})

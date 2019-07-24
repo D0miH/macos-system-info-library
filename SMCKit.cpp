@@ -1,5 +1,10 @@
+#include <CoreFoundation/CoreFoundation.h>
 #include <IOKit/IOKitLib.h>
+#include <IOKit/ps/IOPowerSources.h>
+#include <IOKit/ps/IOPSKeys.h>
+
 #include <stdexcept>
+#include <string>
 
 #include "SMCKit.h"
 
@@ -187,4 +192,21 @@ bool SMCKit::isChargingBattery()
     readKey("BSIn", types.UInt8, readResults);
 
     return (bool)(readResults[0] & (unsigned)1);
+}
+
+std::string SMCKit::getBatteryHealth()
+{
+    // get the power source info
+    CFTypeRef psInfoRef = IOPSCopyPowerSourcesInfo();
+    // get all the power source devices
+    CFArrayRef psDevices = IOPSCopyPowerSourcesList(psInfoRef);
+
+    CFDictionaryRef psDict = IOPSGetPowerSourceDescription(psInfoRef, CFArrayGetValueAtIndex(psDevices, 0));
+
+    char batteryHealth[100];
+    CFStringGetCString((CFStringRef)CFDictionaryGetValue(psDict, CFSTR(kIOPSBatteryHealthKey)), batteryHealth, 100, kCFStringEncodingUTF8);
+
+    CFRelease(psInfoRef);
+
+    return std::string(batteryHealth);
 }

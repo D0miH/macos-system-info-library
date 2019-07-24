@@ -212,6 +212,11 @@ public:
      * @return  Whether the battery is charged.
      */
     bool isChargingBattery();
+
+    /**
+     * Returns the health of the battery in percentage.
+     */
+    std::string getBatteryHealth();
 };
 
 #endif //SMCPPKIT_SMCKIT_H
