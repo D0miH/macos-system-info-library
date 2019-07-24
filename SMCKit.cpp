@@ -213,3 +213,19 @@ float SMCKit::getBatteryHealth()
 
     return (float)maxCapacity / (float)designCapacity;
 }
+
+int SMCKit::getBatteryCycles()
+{
+    // get the
+    io_registry_entry_t batteryRegistry = IORegistryEntryFromPath(kIOMasterPortDefault, "IOService:/AppleACPIPlatformExpert/SMB0/AppleECSMBusController/AppleSmartBatteryManager/AppleSmartBattery");
+    CFMutableDictionaryRef psDict;
+    if (IORegistryEntryCreateCFProperties(batteryRegistry, &psDict, kCFAllocatorDefault, 0))
+    {
+        throw std::runtime_error("Something went wrong while reading the battery cycles.");
+    }
+
+    SInt32 cycles;
+    CFNumberGetValue((CFNumberRef)CFDictionaryGetValue(psDict, CFSTR("CycleCount")), (CFNumberType)3, &cycles);
+
+    return cycles;
+}

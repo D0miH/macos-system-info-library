@@ -217,6 +217,11 @@ public:
      * Returns the health of the battery in percentage.
      */
     float getBatteryHealth();
+
+    /**
+    *  Returns the number of already used battery cycles.
+    */
+    int getBatteryCycles();
 };
 
 #endif //SMCPPKIT_SMCKIT_H
