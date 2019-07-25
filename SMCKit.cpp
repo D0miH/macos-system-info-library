@@ -99,12 +99,34 @@ void SMCKit::readKey(const std::string &keyCode, DataType typeInfo, SMCBytes &re
     readKey(key, resultArray);
 }
 
-int SMCKit::getCPUTemp()
+int SMCKit::getCpuTemp()
 {
     SMCBytes readResult = {0};
     readKey("TC0F", types.SP78, readResult);
 
     return (unsigned int)readResult[0];
+}
+
+std::vector<float> SMCKit::getCpuUsage()
+{
+    cpu_tick_t curCpuTicks = getCpuLoadInfo();
+
+    float userDiff = curCpuTicks.userTicks - prevCpuTicks.userTicks;
+    float sysDiff = curCpuTicks.systemTicks - prevCpuTicks.systemTicks;
+    float idleDiff = curCpuTicks.idleTicks - prevCpuTicks.idleTicks;
+    float niceDiff = curCpuTicks.niceTicks - prevCpuTicks.niceTicks;
+
+    float curTotalTicks = userDiff + sysDiff + idleDiff + niceDiff;
+
+    std::vector<float> resultVec;
+    resultVec.push_back(userDiff / curTotalTicks * 100);
+    resultVec.push_back(sysDiff / curTotalTicks * 100);
+    resultVec.push_back(idleDiff / curTotalTicks * 100);
+    resultVec.push_back(niceDiff / curTotalTicks * 100);
+
+    prevCpuTicks = curCpuTicks;
+
+    return resultVec;
 }
 
 int SMCKit::getFanCount()

@@ -2,6 +2,12 @@
 #define SMCPPKIT_SMCKIT_H
 
 #include <IOKit/IOKitLib.h>
+#include <sys/sysctl.h>
+#include <sys/types.h>
+#include <mach/mach.h>
+#include <mach/processor_info.h>
+#include <mach/mach_host.h>
+#include <vector>
 #include "Utils.h"
 
 /**
@@ -111,13 +117,27 @@ struct SMCParamStruct
     SMCBytes bytes = {0};
 };
 
+typedef struct CpuTickStruct
+{
+    int userTicks;
+    int systemTicks;
+    int idleTicks;
+    int niceTicks;
+} cpu_tick_t;
+
 class SMCKit
 {
 private:
     io_connect_t connectionHandle = 0;
+    cpu_tick_t prevCpuTicks;
 
 public:
     DataTypes types = DataTypes();
+
+    SMCKit()
+    {
+        prevCpuTicks = getCpuLoadInfo();
+    }
 
     ~SMCKit()
     {
@@ -172,7 +192,38 @@ public:
      * Reads the cpu temperature of the CPU_0_DIE sensor.
      * @return  The temperature of the cpu in degrees celcius.
      */
-    int getCPUTemp();
+    int getCpuTemp();
+
+    /**
+     * Returns the cpu usage of the user, system, idle and nice in the given float array in this order.
+     */
+    std::vector<float> getCpuUsage();
+
+    /**
+     * Returns the cpu ticks of the user, system idle and nice in a struct.
+     */
+    cpu_tick_t getCpuLoadInfo()
+    {
+        mach_msg_type_number_t count = HOST_CPU_LOAD_INFO_COUNT;
+        mach_port_t host = mach_host_self();
+        host_cpu_load_info_data_t load_info;
+
+        kern_return_t result = host_statistics(host, HOST_CPU_LOAD_INFO, (host_info_t)&load_info, &count);
+
+        if (result != KERN_SUCCESS)
+        {
+            throw std::runtime_error("An error occured while getting the cpu usage.");
+        }
+
+        cpu_tick_t cpuTickStruct;
+
+        cpuTickStruct.userTicks = load_info.cpu_ticks[CPU_STATE_USER];
+        cpuTickStruct.systemTicks = load_info.cpu_ticks[CPU_STATE_SYSTEM];
+        cpuTickStruct.idleTicks = load_info.cpu_ticks[CPU_STATE_IDLE];
+        cpuTickStruct.niceTicks = load_info.cpu_ticks[CPU_STATE_NICE];
+
+        return cpuTickStruct;
+    }
 
     /**
      * Returns the number of fans of the machine.
