@@ -1,3 +1,3 @@
-# SMCPPKit
+# MacOS system info library
 
-C++ implementation of the [SMCKit](https://github.com/iglance/SMCKit) library to read and write to the Apple SMC.
+C++ library to read and write to the Apple SMC and to get other useful system information about your Mac.
