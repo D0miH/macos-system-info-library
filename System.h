@@ -1,5 +1,5 @@
-#ifndef SMCPPKIT_SYSTEM_H
-#define SMCPPKIT_SYSTEM_H
+#ifndef MACOS_SYSTEM_INFO_LIBRARY_SYSTEM_H
+#define MACOS_SYSTEM_INFO_LIBRARY_SYSTEM_H
 
 #include <IOKit/IOKitLib.h>
 #include <sys/sysctl.h>
@@ -275,4 +275,4 @@ public:
     int getBatteryCycles();
 };
 
-#endif //SMCPPKIT_SYSTEM_H
+#endif //MACOS_SYSTEM_INFO_LIBRARY_SYSTEM_H

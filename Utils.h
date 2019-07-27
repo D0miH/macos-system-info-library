@@ -1,5 +1,5 @@
-#ifndef SMCPPKIT_UTILS_H
-#define SMCPPKIT_UTILS_H
+#ifndef MACOS_SYSTEM_INFO_LIBRARY_UTILS_H
+#define MACOS_SYSTEM_INFO_LIBRARY_UTILS_H
 
 #include <MacTypes.h>
 #include <cstring>
@@ -61,4 +61,4 @@ public:
     }
 };
 
-#endif //SMCPPKIT_UTILS_H
+#endif //MACOS_SYSTEM_INFO_LIBRARY_UTILS_H

@@ -5,13 +5,13 @@
 
 int main()
 {
-    System smc = System();
-    smc.open();
+    System system = System();
+    system.open();
 
     for (int i = 0; i < 10; i++)
     {
 
-        std::vector<float> cpuUsage = smc.getCpuUsage();
+        std::vector<float> cpuUsage = system.getCpuUsage();
 
         std::cout << "User: " << cpuUsage[0] << " System: " << cpuUsage[1] << " Idle: " << cpuUsage[2] << " Nice: " << cpuUsage[3] << std::endl;
 
