@@ -6,9 +6,9 @@
 #include <stdexcept>
 #include <string>
 
-#include "SMCKit.h"
+#include "System.h"
 
-void SMCKit::open()
+void System::open()
 {
     // get the smc service
     io_service_t service = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("AppleSMC"));
@@ -26,7 +26,7 @@ void SMCKit::open()
     IOObjectRelease(service);
 }
 
-void SMCKit::close()
+void System::close()
 {
     kern_return_t closeResult = IOServiceClose(connectionHandle);
     if (closeResult != kIOReturnSuccess)
@@ -35,7 +35,7 @@ void SMCKit::close()
     }
 }
 
-DataType SMCKit::getKeyInfo(std::string keyString)
+DataType System::getKeyInfo(std::string keyString)
 {
     // create a new smc struct and set the key and data fields
     SMCParamStruct inputStruct = SMCParamStruct();
@@ -47,7 +47,7 @@ DataType SMCKit::getKeyInfo(std::string keyString)
     return {readResult.keyInfo.dataType, readResult.keyInfo.dataSize};
 }
 
-SMCParamStruct SMCKit::callSMC(SMCParamStruct givenStruct,
+SMCParamStruct System::callSMC(SMCParamStruct givenStruct,
                                SMCSelector smcSelector)
 {
     // create an output struct to save the result
@@ -81,7 +81,7 @@ SMCParamStruct SMCKit::callSMC(SMCParamStruct givenStruct,
     }
 }
 
-void SMCKit::readKey(smc_key_t smcKey, SMCBytes &result)
+void System::readKey(smc_key_t smcKey, SMCBytes &result)
 {
     SMCParamStruct inputStruct = SMCParamStruct();
 
@@ -93,13 +93,13 @@ void SMCKit::readKey(smc_key_t smcKey, SMCBytes &result)
     std::copy(std::begin(resultStruct.bytes), std::end(resultStruct.bytes), std::begin(result));
 }
 
-void SMCKit::readKey(const std::string &keyCode, DataType typeInfo, SMCBytes &resultArray)
+void System::readKey(const std::string &keyCode, DataType typeInfo, SMCBytes &resultArray)
 {
     SMCKey key = SMCKey(keyCode, typeInfo);
     readKey(key, resultArray);
 }
 
-int SMCKit::getCpuTemp()
+int System::getCpuTemp()
 {
     SMCBytes readResult = {0};
     readKey("TC0F", types.SP78, readResult);
@@ -107,7 +107,7 @@ int SMCKit::getCpuTemp()
     return (unsigned int)readResult[0];
 }
 
-std::vector<float> SMCKit::getCpuUsage()
+std::vector<float> System::getCpuUsage()
 {
     cpu_tick_t curCpuTicks = getCpuLoadInfo();
 
@@ -129,7 +129,7 @@ std::vector<float> SMCKit::getCpuUsage()
     return resultVec;
 }
 
-int SMCKit::getFanCount()
+int System::getFanCount()
 {
     SMCBytes readResult = {0};
     readKey("FNum", types.UInt8, readResult);
@@ -137,7 +137,7 @@ int SMCKit::getFanCount()
     return (unsigned int)readResult[0];
 }
 
-int SMCKit::getMinFanSpeed(int fanID)
+int System::getMinFanSpeed(int fanID)
 {
     SMCBytes readResult = {0};
     std::string keyString = "F" + std::to_string(fanID) + "Mn";
@@ -158,7 +158,7 @@ int SMCKit::getMinFanSpeed(int fanID)
     }
 }
 
-int SMCKit::getMaxFanSpeed(int fanID)
+int System::getMaxFanSpeed(int fanID)
 {
     SMCBytes readResult = {0};
     std::string keyString = "F" + std::to_string(fanID) + "Mx";
@@ -179,7 +179,7 @@ int SMCKit::getMaxFanSpeed(int fanID)
     }
 }
 
-int SMCKit::getCurrentFanSpeed(int fanID)
+int System::getCurrentFanSpeed(int fanID)
 {
     SMCBytes readResult = {0};
     std::string keyString = "F" + std::to_string(fanID) + "Ac";
@@ -200,7 +200,7 @@ int SMCKit::getCurrentFanSpeed(int fanID)
     }
 }
 
-int SMCKit::getBatteryCount()
+int System::getBatteryCount()
 {
     SMCBytes readResults = {0};
     readKey("BNum", types.UInt8, readResults);
@@ -208,7 +208,7 @@ int SMCKit::getBatteryCount()
     return (unsigned int)readResults[0];
 }
 
-bool SMCKit::isChargingBattery()
+bool System::isChargingBattery()
 {
     SMCBytes readResults = {0};
     readKey("BSIn", types.UInt8, readResults);
@@ -216,7 +216,7 @@ bool SMCKit::isChargingBattery()
     return (bool)(readResults[0] & (unsigned)1);
 }
 
-float SMCKit::getBatteryHealth()
+float System::getBatteryHealth()
 {
     // get the
     io_registry_entry_t batteryRegistry = IORegistryEntryFromPath(kIOMasterPortDefault, "IOService:/AppleACPIPlatformExpert/SMB0/AppleECSMBusController/AppleSmartBatteryManager/AppleSmartBattery");
@@ -236,7 +236,7 @@ float SMCKit::getBatteryHealth()
     return (float)maxCapacity / (float)designCapacity;
 }
 
-int SMCKit::getBatteryCycles()
+int System::getBatteryCycles()
 {
     // get the
     io_registry_entry_t batteryRegistry = IORegistryEntryFromPath(kIOMasterPortDefault, "IOService:/AppleACPIPlatformExpert/SMB0/AppleECSMBusController/AppleSmartBatteryManager/AppleSmartBattery");

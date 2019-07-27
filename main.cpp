@@ -1,11 +1,11 @@
 #include <iostream>
 #include <thread>
 #include <numeric>
-#include "SMCKit.h"
+#include "System.h"
 
 int main()
 {
-    SMCKit smc = SMCKit();
+    System smc = System();
     smc.open();
 
     for (int i = 0; i < 10; i++)

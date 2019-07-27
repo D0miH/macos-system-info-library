@@ -1,5 +1,5 @@
-#ifndef SMCPPKIT_SMCKIT_H
-#define SMCPPKIT_SMCKIT_H
+#ifndef SMCPPKIT_SYSTEM_H
+#define SMCPPKIT_SYSTEM_H
 
 #include <IOKit/IOKitLib.h>
 #include <sys/sysctl.h>
@@ -125,7 +125,7 @@ typedef struct CpuTickStruct
     int niceTicks;
 } cpu_tick_t;
 
-class SMCKit
+class System
 {
 private:
     io_connect_t connectionHandle = 0;
@@ -134,12 +134,12 @@ private:
 public:
     DataTypes types = DataTypes();
 
-    SMCKit()
+    System()
     {
         prevCpuTicks = getCpuLoadInfo();
     }
 
-    ~SMCKit()
+    ~System()
     {
         close();
     }
@@ -275,4 +275,4 @@ public:
     int getBatteryCycles();
 };
 
-#endif //SMCPPKIT_SMCKIT_H
+#endif //SMCPPKIT_SYSTEM_H
