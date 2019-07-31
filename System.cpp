@@ -107,6 +107,37 @@ int System::getCpuTemp()
     return (unsigned int)readResult[0];
 }
 
+std::vector<float> System::getMemoryUsage()
+{
+    mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
+    mach_port_t host = mach_host_self();
+    vm_statistics64_data_t stats;
+
+    kern_return_t result = host_statistics64(host, HOST_VM_INFO64, (host_info64_t)&stats, &count);
+
+    if (result != KERN_SUCCESS)
+    {
+        throw std::runtime_error("An error occured while getting the memory usage.");
+    }
+
+    vm_size_t page_size = vm_kernel_page_size;
+    // divide by 1_073_741_824 to get gigabyte
+    float freeMem = (double)(stats.free_count * page_size) / (double)1073741824;
+    float activeMem = (double)(stats.active_count * page_size) / (double)1073741824;
+    float inactiveMem = (double)(stats.inactive_count * page_size) / (double)1073741824;
+    float wiredMem = (double)(stats.wire_count * page_size) / (double)1073741824;
+    float compressedMem = (double)(stats.compressor_page_count * page_size) / (double)1073741824;
+
+    std::vector<float> resultVec;
+    resultVec.push_back(freeMem);
+    resultVec.push_back(activeMem);
+    resultVec.push_back(inactiveMem);
+    resultVec.push_back(wiredMem);
+    resultVec.push_back(compressedMem);
+
+    return resultVec;
+}
+
 std::vector<float> System::getCpuUsage()
 {
     cpu_tick_t curCpuTicks = getCpuLoadInfo();

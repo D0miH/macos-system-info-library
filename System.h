@@ -189,6 +189,13 @@ public:
     void readKey(const std::string &keyCode, DataType typeInfo, SMCBytes &resultArray);
 
     /**
+     * Reads the current ram usage and returns it in a vector.
+     * The vector contains 5 values: [free, active, inactive, wired, compressed]
+     * The values are in GB
+     */
+    std::vector<float> getMemoryUsage();
+
+    /**
      * Reads the cpu temperature of the CPU_0_DIE sensor.
      * @return  The temperature of the cpu in degrees celcius.
      */
