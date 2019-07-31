@@ -138,6 +138,22 @@ std::vector<float> System::getMemoryUsage()
     return resultVec;
 }
 
+float System::getTotalMemory()
+{
+    mach_msg_type_number_t count = HOST_BASIC_INFO_COUNT;
+    mach_port_t host = mach_host_self();
+    host_basic_info_data_t info;
+
+    kern_return_t result = host_info(host, HOST_BASIC_INFO, (host_info_t)&info, &count);
+
+    if (result != KERN_SUCCESS)
+    {
+        throw std::runtime_error("An error occured while getting the total memory of the machine.");
+    }
+
+    return (double)info.max_mem / (double)1073741824;
+}
+
 std::vector<float> System::getCpuUsage()
 {
     cpu_tick_t curCpuTicks = getCpuLoadInfo();

@@ -196,6 +196,11 @@ public:
     std::vector<float> getMemoryUsage();
 
     /**
+     * Returns the total amount of ram memory of this machine in gigabyte.
+     */
+    float getTotalMemory();
+
+    /**
      * Reads the cpu temperature of the CPU_0_DIE sensor.
      * @return  The temperature of the cpu in degrees celcius.
      */
