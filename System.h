@@ -201,7 +201,7 @@ public:
     float getTotalMemory();
 
     /**
-     * Reads the cpu temperature of the CPU_0_DIE sensor.
+     * Reads the cpu temperature of the CPU_0_PROXIMITY sensor.
      * @return  The temperature of the cpu in degrees celcius.
      */
     int getCpuTemp();

@@ -11,9 +11,9 @@ int main()
     for (int i = 0; i < 10; i++)
     {
 
-        float mem = system.getTotalMemory();
+        int temp = system.getCpuTemp();
 
-        std::cout << mem << std::endl;
+        std::cout << temp << std::endl;
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }

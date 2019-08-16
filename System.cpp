@@ -102,7 +102,7 @@ void System::readKey(const std::string &keyCode, DataType typeInfo, SMCBytes &re
 int System::getCpuTemp()
 {
     SMCBytes readResult = {0};
-    readKey("TC0F", types.SP78, readResult);
+    readKey("TC0P", types.SP78, readResult);
 
     return (unsigned int)readResult[0];
 }
